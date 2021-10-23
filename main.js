@@ -3,16 +3,19 @@
 // ——————————————————————————————————————————————————
 import data from './data.js';
 
-const nextBtn = document.querySelector('.next');
-const beforeBtn = document.querySelector('.before');
+// const nextBtn = document.querySelector('.next');
+// const beforeBtn = document.querySelector('.before');
 
 class TextScramble {
     constructor(el) {
         this.el = el;
-        this.chars = '~!@#$%^&*';
+        this.chars = 'ㅇㅅㅁ';
         this.update = this.update.bind(this);
     }
     setText(newText) {
+        this.randomColor1 = Math.floor(Math.random() * 255 + 1);
+        this.randomColor2 = Math.floor(Math.random() * 255 + 1);
+        this.randomColor3 = Math.floor(Math.random() * 255 + 1);
         const oldText = this.el.innerText;
         if (!newText) {
             return;
@@ -29,12 +32,13 @@ class TextScramble {
         }
         cancelAnimationFrame(this.frameRequest);
         this.frame = 0;
-        this.update();
+        this.update(this.randomColor1, this.randomColor2, this.randomColor3);
         return promise;
     }
     update() {
         let output = '';
         let complete = 0;
+        console.log(this.randomColor1, this.randomColor2, this.randomColor3);
         for (let i = 0, n = this.queue.length; i < n; i++) {
             let { from, to, start, end, char } = this.queue[i];
             if (this.frame >= end) {
@@ -45,7 +49,7 @@ class TextScramble {
                     char = this.randomChar();
                     this.queue[i].char = char;
                 }
-                output += `<span class="dud1">${char}</span>`;
+                output += `<span class="dud" style="color : rgb(${this.randomColor1},${this.randomColor2},${this.randomColor3})">${char}</span>`;
             } else {
                 output += from;
             }
@@ -67,35 +71,66 @@ class TextScramble {
 // Example
 // ——————————————————————————————————————————————————
 
-const mainData = data.map((item) => {
+const mainDesc = data.map((item) => {
     return item.desc;
 });
+const mainTitle = data.map((item) => {
+    return item.title;
+});
 
-const phrases = mainData;
+const phrases = mainDesc;
 
+const title = mainTitle;
+
+const ol = document.querySelector('.title');
 const el = document.querySelector('.text');
 const fx = new TextScramble(el);
+const gx = new TextScramble(ol);
 
 let counter = 0;
+let x;
+let cx;
+let mode = false;
 
 const next = () => {
-    if (counter < 0) {
-        counter = 0;
-    }
-    fx.setText(phrases[counter]).then(() => {
-        nextBtn.addEventListener('click', () => {
-            next();
-            counter = (counter + 1) % phrases.length;
+    // nextBtn.addEventListener('click', () => {
+    //     counter++;
+    //     fx.setText(phrases[counter]);
+    //     console.log(counter);
+    // });
+    // beforeBtn.addEventListener('click', () => {
+    //     counter--;
+    //     if (counter < 0) {
+    //         counter = 0;
+    //     }
+    //     fx.setText(phrases[counter]);
+    // });
 
-            console.log(counter);
-        });
-        beforeBtn.addEventListener('click', () => {
-            next();
-            counter = (counter - 1) % phrases.length;
-
-            console.log(counter);
-        });
+    window.addEventListener('pointerdown', (e) => {
+        mode = true;
+        x = e.offsetX;
+    });
+    window.addEventListener('pointerup', (e) => {
+        mode = false;
+        cx = e.offsetX;
+        if (x - cx < 0) {
+            counter++;
+            if (counter > phrases.length) {
+                counter = phrases.length - 1;
+            }
+            fx.setText(phrases[counter]);
+            gx.setText(title[counter]);
+        } else if (x - cx > 0) {
+            counter--;
+            if (counter < 0) {
+                counter = 0;
+            }
+            fx.setText(phrases[counter]);
+            gx.setText(title[counter]);
+        }
     });
 };
 
+gx.setText(title[counter]);
+fx.setText(phrases[counter]);
 next();
