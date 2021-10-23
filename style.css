@@ -1,0 +1,48 @@
+html,
+body {
+    font-family: 'Roboto Mono', monospace;
+    background: white;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+.container {
+    height: 100%;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.text {
+    font-weight: 100;
+    font-size: 1.3rem;
+    color: black;
+    text-align: center;
+    line-height: 1.5;
+}
+.dud1 {
+    color: gold;
+}
+.btn {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+button {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    font-size: 1rem;
+    border: 1px solid black;
+    border-radius: 1000px;
+    padding: 5px 15px;
+}
