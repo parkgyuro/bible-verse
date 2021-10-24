@@ -109,10 +109,7 @@ const next = () => {
         mode = true;
         x = e.offsetX;
     });
-    window.addEventListener('touchstart', (e) => {
-        mode = true;
-        x = e.changedTouches[0].clientX;
-    });
+
     window.addEventListener('pointerup', (e) => {
         mode = false;
         cx = e.offsetX;
@@ -132,17 +129,28 @@ const next = () => {
             gx.setText(title[counter]);
         }
     });
+};
+
+if (
+    navigator.userAgent.match(
+        /Mobile|iP(hone|od)|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune/
+    )
+) {
+    window.addEventListener('touchstart', (e) => {
+        mode = true;
+        x = e.changedTouches[0].clientX;
+    });
     window.addEventListener('touchend', (e) => {
         mode = false;
         cx = e.changedTouches[0].clientX;
-        if (x - cx < 0) {
+        if (x - cx > 0) {
             counter++;
             if (counter > phrases.length) {
                 counter = phrases.length - 1;
             }
             fx.setText(phrases[counter]);
             gx.setText(title[counter]);
-        } else if (x - cx > 0) {
+        } else if (x - cx < 0) {
             counter--;
             if (counter < 0) {
                 counter = 0;
@@ -151,7 +159,7 @@ const next = () => {
             gx.setText(title[counter]);
         }
     });
-};
+}
 
 gx.setText(title[counter]);
 fx.setText(phrases[counter]);
