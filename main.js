@@ -9,13 +9,10 @@ import data from './data.js';
 class TextScramble {
     constructor(el) {
         this.el = el;
-        this.chars = 'ㅇㅅㅁ';
+        this.chars = '!@#$%^&*()_+~{}?';
         this.update = this.update.bind(this);
     }
     setText(newText) {
-        this.randomColor1 = Math.floor(Math.random() * 255 + 1);
-        this.randomColor2 = Math.floor(Math.random() * 255 + 1);
-        this.randomColor3 = Math.floor(Math.random() * 255 + 1);
         const oldText = this.el.innerText;
         if (!newText) {
             return;
@@ -32,13 +29,15 @@ class TextScramble {
         }
         cancelAnimationFrame(this.frameRequest);
         this.frame = 0;
-        this.update(this.randomColor1, this.randomColor2, this.randomColor3);
+        this.update();
         return promise;
     }
     update() {
         let output = '';
         let complete = 0;
-        console.log(this.randomColor1, this.randomColor2, this.randomColor3);
+        this.randomColor1 = Math.floor(Math.random() * 255 + 1);
+        this.randomColor2 = Math.floor(Math.random() * 255 + 1);
+        this.randomColor3 = Math.floor(Math.random() * 255 + 1);
         for (let i = 0, n = this.queue.length; i < n; i++) {
             let { from, to, start, end, char } = this.queue[i];
             if (this.frame >= end) {
@@ -110,9 +109,32 @@ const next = () => {
         mode = true;
         x = e.offsetX;
     });
+    window.addEventListener('touchstart', (e) => {
+        mode = true;
+        x = e.changedTouches[0].clientX;
+    });
     window.addEventListener('pointerup', (e) => {
         mode = false;
         cx = e.offsetX;
+        if (x - cx < 0) {
+            counter++;
+            if (counter > phrases.length) {
+                counter = phrases.length - 1;
+            }
+            fx.setText(phrases[counter]);
+            gx.setText(title[counter]);
+        } else if (x - cx > 0) {
+            counter--;
+            if (counter < 0) {
+                counter = 0;
+            }
+            fx.setText(phrases[counter]);
+            gx.setText(title[counter]);
+        }
+    });
+    window.addEventListener('touchend', (e) => {
+        mode = false;
+        cx = e.changedTouches[0].clientX;
         if (x - cx < 0) {
             counter++;
             if (counter > phrases.length) {
